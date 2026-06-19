@@ -13,10 +13,5 @@ const connectDB = async () => {
   }
 };
 
-await mongoose.connect(process.env.MONGODB_URI, {
-  tls: true,
-  tlsAllowInvalidCertificates: false,
-});
-
 
 export default connectDB;
