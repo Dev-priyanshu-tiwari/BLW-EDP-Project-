@@ -30,6 +30,23 @@ export default function App() {
   // Controls whether the desktop sidebar is expanded (open) or collapsed (closed)
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
 
+  // Auto-collapse the sidebar on smaller screens (tablets / narrow laptop windows),
+  // and auto-expand it again once the viewport is wide enough. The 1024px breakpoint
+  // matches Tailwind's "lg" breakpoint.
+  useEffect(() => {
+    const SIDEBAR_AUTO_BREAKPOINT = 1024;
+
+    const handleResize = () => {
+      setSidebarOpen(window.innerWidth >= SIDEBAR_AUTO_BREAKPOINT);
+    };
+
+    // Set initial state based on current window size
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // MongoDB connection status state representation
   interface MongoStatus {
     status: "connected" | "disconnected" | "connecting" | "error";
