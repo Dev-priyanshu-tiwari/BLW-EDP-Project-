@@ -3,10 +3,10 @@
   "buildCommand": "vite build",
   "outputDirectory": "dist",
   "functions": {
-    "api/index.ts": {
+    "api/**/*.ts": {
       "memory": 1024,
       "maxDuration": 10,
-      "includeFiles": "{server.ts,db.js}"
+      "includeFiles": "server.ts"
     }
   },
   "rewrites": [
