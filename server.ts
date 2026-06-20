@@ -3,9 +3,8 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import dns from "dns";
 import { MongoClient, Db } from "mongodb";
-import connectDB from './db';
+import connectDB from './db.js';
 connectDB(); 
-
 // Ensure dns resolution is stable
 dns.setDefaultResultOrder("ipv4first");
 
@@ -633,8 +632,6 @@ app.post("/api/expenditure/forecast", async (req, res) => {
 // --- SERVER ROUTING AND STARTUP ---
 
 // Kick off the MongoDB connection check immediately (works in both local & serverless mode).
-// On Vercel each cold start re-invokes this file, but checkMongoConnection() itself is fast
-// and safe to call repeatedly — it just (re)sets the connection state.
 let mongoInitPromise: Promise<void> | null = null;
 function ensureMongoInit() {
   if (!mongoInitPromise) {
@@ -656,7 +653,6 @@ const isServerless = !!process.env.VERCEL;
 
 if (!isServerless) {
   // --- LOCAL DEVELOPMENT / TRADITIONAL HOSTING ---
-  // Runs a normal long-lived Express server with app.listen(), same as before.
   async function startServer() {
     await ensureMongoInit();
 
@@ -686,6 +682,5 @@ if (!isServerless) {
 
 // --- VERCEL SERVERLESS EXPORT ---
 // On Vercel, this file is imported (not run directly) by api/index.ts, which forwards
-// every request into this same Express app. No app.listen() happens in that path —
-// Vercel's runtime handles the HTTP server itself.
+// every request into this same Express app.
 export default app;
