@@ -422,11 +422,11 @@ export default function App() {
 
         {/* 5. Indian Railways Accounts footer */}
         <footer className="bg-white border-t border-gray-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[9px] text-gray-400 font-bold font-mono shrink-0 uppercase tracking-wider">
-          <span>BLW Accounts Division • Accounts Ledger Module</span>
+          <span>BLW Accounts Division</span>
           <div className="flex items-center gap-2 text-gray-300">
-            <span>Division Unit: Varanasi HQ</span>
+            <span>Div Unit: Varanasi HQ</span>
             <span>•</span>
-            <span>Spreadsheet Controller Active</span>
+            <span>Spreadsheet Controller</span>
           </div>
         </footer>
       </main>
