@@ -164,6 +164,37 @@ The app will be available at `http://localhost:5173` (frontend) with the API run
 
 ---
 
+## 🔄 Development Workflow
+
+This project is managed using **GitHub Desktop**. The typical workflow for pushing changes:
+
+1. **Make changes** to the code in VS Code.
+2. Open **GitHub Desktop** — it auto-detects all changed/new files under the **Changes** tab.
+3. **Select the files** you want to include (check the boxes), or check the top box to select all.
+4. Write a short **commit summary** describing what changed (e.g. `Fix MongoDB Atlas connection`, `Add AI Insights tab`).
+5. Click **Commit to main**.
+6. Click **Push origin** to upload the commit to GitHub.
+
+```
+Edit code → Stage changes → Write commit message → Commit → Push origin
+```
+
+> 💡 Before committing, make sure `.env`, `node_modules/`, and any files with credentials (like the MongoDB connection string) are listed in `.gitignore` so they never get pushed to GitHub.
+
+### Recommended Branching (optional, for cleaner history)
+
+```bash
+# Create a new branch for a feature/fix
+git checkout -b feature/forecast-module
+
+# Work, commit, then push the branch
+git push origin feature/forecast-module
+
+# Open a Pull Request on GitHub to merge into main
+```
+
+---
+
 ## 🔮 Future Scope
 
 - Role-based authentication (Officer / Auditor / Admin)
@@ -188,4 +219,5 @@ Built during internship at Banaras Locomotive Works (BLW), Indian Railways
 
 ## 📄 License
 
-This project was built for academic and internship purposes as part of the curriculum at Dr. Ram Manohar Lohia Avadh University.
+This project was built for academic and internship purposes as part of the curriculum at BLW Indian Railways
+
