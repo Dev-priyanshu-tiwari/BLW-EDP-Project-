@@ -1,8 +1,5 @@
-// api/index.ts
-// Self-contained Vercel serverless function. Contains the full Express app
+
 // (PO/CO6 routes, MongoDB connection logic, local LLM insights/forecast engine)
-// directly in this file to avoid any cross-file module resolution issues
-// that occur with Vercel's serverless bundler when importing from outside /api.
 
 import express from "express";
 import { MongoClient, Db } from "mongodb";
@@ -39,13 +36,15 @@ async function checkMongoConnection() {
       tls: true,
       // Use the modern TLS stack defaults rather than forcing legacy options —
       // forcing tlsAllowInvalidCertificates/older TLS versions is what was
-      // causing "SSL alert number 80 / internal error" on Vercel's runtime.
+
+      
     });
     await mongoClient.connect();
     mongoDb = mongoClient.db("blw_ledger");
     mongoConnectionStatus = "connected";
     mongoConnError = null;
     console.log("[MongoDB] SUCCESS! Connected successfully to MongoDB Atlas.");
+    
 
     // Auto-seed default baseline data if collections are empty so UI starts with rich content
     const poCollection = mongoDb.collection("pos");
@@ -119,6 +118,7 @@ interface Co6Record {
   status: "Passed" | "Pending" | "Returned";
   period: "monthly" | "quarterly" | "yearly";
 }
+
 
 // Prepopulated BLW Indian Railways June 2026 Sandbox Data
 let poRecords: PoRecord[] = [
@@ -294,6 +294,7 @@ app.post("/api/expenditure/sync", async (req, res) => {
   });
 });
 
+
 // Reset database to standard BLW Sandbox June 2026 railway records
 app.post("/api/expenditure/reset", async (req, res) => {
   poRecords = [
@@ -335,6 +336,8 @@ app.post("/api/expenditure/reset", async (req, res) => {
     co6s: co6Records
   });
 });
+
+
 
 // Local Custom LLM Audit Engine - Generates dynamic cognitive accounts diagnostics completely offline
 const generateRailwayLLMInsights = (pos: PoRecord[], co6s: Co6Record[]) => {
@@ -447,6 +450,7 @@ _This senior audit operates on official Indian Railways Accounts procedures, pro
   };
 };
 
+
 // AI Controller: Generates cognitive insights from current Railway records using In-house Local LLM
 app.post("/api/expenditure/insights", async (req, res) => {
   try {
@@ -463,6 +467,7 @@ app.post("/api/expenditure/insights", async (req, res) => {
     res.json(fallback);
   }
 });
+
 
 // Local Custom LLM Forecast Simulator - Runs 100% locally with zero external API calls
 const generateRailwayLLMForecast = (
@@ -555,6 +560,7 @@ const generateRailwayLLMForecast = (
   // Calculate projected totals
   const totalPoProjected = forecastPoints.reduce((s, p) => s + p.projectedPoAmount, 0);
   const totalCo6Projected = forecastPoints.reduce((s, p) => s + p.projectedCo6Amt, 0);
+  
 
   // Custom sophisticated LLM response markdown text matching their current database completely
   const narrativeAnalysis = `### **BLW Foresight Accounts Board - Executive Cognitive Projection**
@@ -628,6 +634,7 @@ interface ForecastResponse {
   forecastPoints: ForecastPoint[];
   recommendations: ForecastRecommendation[];
 }
+
 
 // REST API for intelligent railway expenditure forecasting using In-house Local LLM
 app.post("/api/expenditure/forecast", async (req, res) => {
