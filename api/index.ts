@@ -35,7 +35,11 @@ async function checkMongoConnection() {
   try {
     console.log("[MongoDB] Attempting connection to Atlas cluster...");
     mongoClient = new MongoClient(uri, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 10000,
+      tls: true,
+      // Use the modern TLS stack defaults rather than forcing legacy options —
+      // forcing tlsAllowInvalidCertificates/older TLS versions is what was
+      // causing "SSL alert number 80 / internal error" on Vercel's runtime.
     });
     await mongoClient.connect();
     mongoDb = mongoClient.db("blw_ledger");
