@@ -632,29 +632,60 @@ app.post("/api/expenditure/forecast", async (req, res) => {
 
 // --- SERVER ROUTING AND STARTUP ---
 
-async function startServer() {
-  // Trigger MongoDB Atlas connection checks (graceful and fail-safe)
-  await checkMongoConnection();
+// Kick off the MongoDB connection check immediately (works in both local & serverless mode).
+// On Vercel each cold start re-invokes this file, but checkMongoConnection() itself is fast
+// and safe to call repeatedly — it just (re)sets the connection state.
+let mongoInitPromise: Promise<void> | null = null;
+function ensureMongoInit() {
+  if (!mongoInitPromise) {
+    mongoInitPromise = checkMongoConnection();
+  }
+  return mongoInitPromise;
+}
 
-  if (process.env.NODE_ENV !== "production") {
-    // Development mode: Integrate Vite as Express middleware
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    // Production mode: Serve compiled assets
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+// Middleware: make sure Mongo init has been attempted before handling any /api request.
+// This matters most on Vercel, where there is no long-running startServer() call.
+app.use(async (req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    await ensureMongoInit();
+  }
+  next();
+});
+
+const isServerless = !!process.env.VERCEL;
+
+if (!isServerless) {
+  // --- LOCAL DEVELOPMENT / TRADITIONAL HOSTING ---
+  // Runs a normal long-lived Express server with app.listen(), same as before.
+  async function startServer() {
+    await ensureMongoInit();
+
+    if (process.env.NODE_ENV !== "production") {
+      // Development mode: Integrate Vite as Express middleware
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+    } else {
+      // Production mode: Serve compiled assets
+      const distPath = path.join(process.cwd(), "dist");
+      app.use(express.static(distPath));
+      app.get("*", (req, res) => {
+        res.sendFile(path.join(distPath, "index.html"));
+      });
+    }
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`[Indian Railways BLW PO-CO6 Server] Running on http://0.0.0.0:${PORT}`);
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[Indian Railways BLW PO-CO6 Server] Running on http://0.0.0.0:${PORT}`);
-  });
+  startServer();
 }
 
-startServer();
+// --- VERCEL SERVERLESS EXPORT ---
+// On Vercel, this file is imported (not run directly) by api/index.ts, which forwards
+// every request into this same Express app. No app.listen() happens in that path —
+// Vercel's runtime handles the HTTP server itself.
+export default app;
