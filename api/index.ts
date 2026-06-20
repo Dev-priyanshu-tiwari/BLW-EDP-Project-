@@ -1,9 +1,3 @@
-// api/index.ts
-// Self-contained Vercel serverless function. Contains the full Express app
-// (PO/CO6 routes, MongoDB connection logic, local LLM insights/forecast engine)
-// directly in this file to avoid any cross-file module resolution issues
-// that occur with Vercel's serverless bundler when importing from outside /api.
-
 import express from "express";
 import { MongoClient, Db } from "mongodb";
 import connectDB from '../db.js';
@@ -39,7 +33,8 @@ async function checkMongoConnection() {
       tls: true,
       // Use the modern TLS stack defaults rather than forcing legacy options —
       // forcing tlsAllowInvalidCertificates/older TLS versions is what was
-      // causing "SSL alert number 80 / internal error" on Vercel's runtime.
+      
+      
     });
     await mongoClient.connect();
     mongoDb = mongoClient.db("blw_ledger");
