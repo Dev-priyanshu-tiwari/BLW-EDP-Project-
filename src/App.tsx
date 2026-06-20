@@ -332,11 +332,11 @@ export default function App() {
       </div>
 
       {/* 3. Main Body Frame */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden relative">
         
         {/* Desktop Head Row */}
         <header
-          className={`h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6 md:px-10 shrink-0 transition-transform duration-300 ease-in-out z-20 ${
+          className={`h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6 md:px-10 transition-transform duration-300 ease-in-out z-20 absolute top-0 left-0 right-0 md:relative md:shrink-0 ${
             headerVisible ? "translate-y-0" : "-translate-y-full md:translate-y-0"
           }`}
         >
@@ -383,7 +383,7 @@ export default function App() {
         <div
           ref={scrollContainerRef}
           onScroll={handleContentScroll}
-          className="flex-1 p-4 md:p-8 space-y-6 overflow-y-auto"
+          className="flex-1 pt-24 px-4 pb-4 md:p-8 space-y-6 overflow-y-auto"
         >
           {loading ? (
             <div className="min-h-96 flex flex-col items-center justify-center space-y-4">
