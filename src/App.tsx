@@ -11,7 +11,9 @@ import {
   TrendingUp,
   FileCheck,
   Database,
-  Briefcase
+  Briefcase,
+  PanelLeftClose,
+  PanelLeftOpen
 } from "lucide-react";
 
 export default function App() {
@@ -24,6 +26,9 @@ export default function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [syncStatus, setSyncStatus] = useState<string>("Synchronized");
   const [versionTrigger, setVersionTrigger] = useState<number>(0);
+
+  // Controls whether the desktop sidebar is expanded (open) or collapsed (closed)
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
 
   // MongoDB connection status state representation
   interface MongoStatus {
@@ -141,8 +146,12 @@ export default function App() {
     <div className="h-screen w-screen bg-[#F8FAFC] text-[#1E293B] font-sans overflow-hidden flex flex-col md:flex-row antialiased selection:bg-indigo-100">
       
       {/* 1. Left Sidebar - Desktop Layout */}
-      <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col justify-between py-8 px-6 shrink-0">
-        <div className="space-y-10">
+      <aside
+        className={`hidden md:flex bg-white border-r border-slate-200 flex-col justify-between py-8 shrink-0 overflow-hidden transition-all duration-300 ease-in-out ${
+          sidebarOpen ? "w-64 px-6" : "w-0 px-0 border-r-0"
+        }`}
+      >
+        <div className={`space-y-10 transition-opacity duration-200 ${sidebarOpen ? "opacity-100 delay-100" : "opacity-0"} whitespace-nowrap`}>
           
           {/* Indian Railways BLW logo and title branding */}
           <div className="flex items-center gap-3 mb-8">
@@ -214,7 +223,7 @@ export default function App() {
         </div>
 
         {/* Division and authority tag */}
-        <div className="flex flex-col gap-3.5 border-t border-gray-100 pt-6">
+        <div className={`flex flex-col gap-3.5 border-t border-gray-100 pt-6 transition-opacity duration-200 whitespace-nowrap ${sidebarOpen ? "opacity-100 delay-100" : "opacity-0"}`}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#EEF2F6] text-indigo-600 border border-slate-200 flex items-center justify-center font-bold font-sans">
               AO
@@ -284,11 +293,20 @@ export default function App() {
         
         {/* Desktop Head Row */}
         <header className="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6 md:px-10 shrink-0">
-          <h1 className="text-lg md:text-xl font-bold text-gray-900 font-display uppercase tracking-tight">
-            {activeTab === "overview" && "BLW Expenditure Dashboard"} 
-            {activeTab === "salaries" && "PO Budget Sanctions (Excel Stream)"}
-            {activeTab === "vendors" && "CO6 Registered Bills (Excel Stream)"}
-          </h1>
+          <div className="flex items-center gap-3 md:gap-4">
+            <button
+              onClick={() => setSidebarOpen(o => !o)}
+              title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+              className="hidden md:flex p-2 border border-gray-200 hover:bg-gray-50 rounded-xl transition text-gray-500 hover:text-gray-900 h-8 w-8 items-center justify-center cursor-pointer shrink-0"
+            >
+              {sidebarOpen ? <PanelLeftClose className="w-3.5 h-3.5" /> : <PanelLeftOpen className="w-3.5 h-3.5" />}
+            </button>
+            <h1 className="text-lg md:text-xl font-bold text-gray-900 font-display uppercase tracking-tight">
+              {activeTab === "overview" && "BLW Expenditure Dashboard"} 
+              {activeTab === "salaries" && "PO Budget Sanctions (Excel Stream)"}
+              {activeTab === "vendors" && "CO6 Registered Bills (Excel Stream)"}
+            </h1>
+          </div>
           
           <div className="flex items-center gap-3 md:gap-5 text-xs text-gray-500">
             <button
