@@ -35,7 +35,7 @@ async function checkMongoConnection() {
   try {
     console.log("[MongoDB] Attempting connection to Atlas cluster...");
     mongoClient = new MongoClient(uri, {
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 8000,
       tls: true,
       // Use the modern TLS stack defaults rather than forcing legacy options —
       // forcing tlsAllowInvalidCertificates/older TLS versions is what was
